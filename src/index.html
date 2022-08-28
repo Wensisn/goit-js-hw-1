@@ -8,7 +8,41 @@
     <script type="module" src="./index.js"></script>
   </head>
   <body>
+    <form class="form-inline search-form js-search-form">
+      <div class="form-group">
+          <label for="searchQuery" class="sr-only"></label>
+          <input
+          type="text"
+          class=""
+          name="query"
+          id="searchQuery"
+          placeholder="Что ищем?"
+          autocomplete="off"
+          />
+      </div>
+      <button type="submit" class="btn btn-primary nb-2">Искать</button>
+  </form>
+
+  <ul class="articlas js-articlas-container"></ul>
+
+  <button 
+  type="button"
+  class="load-more btn-primary button"
+  data-action="load-more">
+  <span
+  class="spiner-border  
+  spiner-border-sm
+  spinner 
+  is-hidden"
+  role="status"
+  aria-hidden="true">
+  </span>
+  
+  <span class="label">Показать ещё</span>
+  </button>
+
+
     <!-- ❗️❗️❗️ Add partials like so for every page -->
-    <include src="./partials/example.html"></include>
+    <!-- <include src="./partials/example.html"></include> -->
   </body>
 </html>
