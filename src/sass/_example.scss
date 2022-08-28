@@ -26,6 +26,124 @@
 //   background-size: cover;
 //   background-position: center;
 // }
-body{
-  background-color: tomato;
+// body{
+//   background-color: tomato;
+// }
+
+.form-group{
+  margin-right: 10px;
 }
+
+  .search-form input {
+    border-radius: 4px 0 0 4px;
+    border: none;
+    outline: none;
+    background-color: #fff;
+    padding: 8px 10px;
+    font: inherit;
+    border: 5px solid rgb(15, 153, 177);
+    border-radius: 10px;
+   
+    
+  }
+
+.btn{
+  display: block;
+    margin: 25px auto 0 auto;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: lightblue;
+    font: inherit;
+    color: white;
+    cursor: pointer;
+    transition: all 0.5s;
+    margin: 0;
+}
+.btn:hover {
+  background-color: lightgreen;
+}
+
+.form-inline{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.articlas{
+  display: flex;
+  padding: 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+  .gallery-link {
+    margin: auto;
+    min-width: 300px;
+    flex-basis: calc((100% - 80px) / 4);
+    border: 1px solid rgb(241, 238, 238);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.3s;
+    margin-bottom: 15px;
+  }
+  
+  .gallery-link:hover,
+  .gallery-link:focus {
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  }
+  
+  .photo-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+  }
+  
+  .photo-card-image {
+    display: block;
+    width: 100%;
+    height: 30vh;
+    object-fit: cover;
+  }
+  
+  .info {
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: black;
+    margin: 10px;
+    justify-content: space-between;
+  }
+  
+  .info-item:not(:first-child) {
+    margin-left: 5px;
+  }
+  .load-more{
+    display: block;
+    margin: 25px auto 0 auto;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: lightblue;
+    font: inherit;
+    color: white;
+    cursor: pointer;
+    transition: all 0.5s;
+  }
+
+  .load-more:hover {
+    background-color: lightgreen;
+  }
+
+  .load-more.is-hidden {
+    display: none;
+  }
+
+  button > .spinner.is-hidden{
+    display: none
+  }
