@@ -3,13 +3,14 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 
 import LoadMoreBtn from './js/loadMore'
 import NewApiService from './js/news-api-server'
+import { ifEmptySearchAlert, ifNoImagesFoundAlert,ifEndOfSearchAlert,ifImagesFoundAlert,ifDublicateSearch } from './js/alert';
 
 const refs = {
     searchForm: document.querySelector('.js-search-form'),
     articlesContainer: document.querySelector('.gallery'),
 }
 
-
+let textInput = '';
 
 const loadMoreBtn = new LoadMoreBtn({
 selector : '[data-action="load-more"]',
@@ -22,25 +23,40 @@ const newApiService = new NewApiService()
 refs.searchForm.addEventListener('submit' , onSearch)
 loadMoreBtn.refs.button.addEventListener('click' , onLoadMore)
 
- function onSearch (e) {
-    e.preventDefault()
+function onSearch(e) {
+  e.preventDefault()
     
-    clearRenderGallery();
+  clearRenderGallery();
 
-    newApiService.query = e.currentTarget.elements.query.value
+  newApiService.query = e.currentTarget.elements.query.value
+   
+  textInput = e.currentTarget.elements[0].value.trim()
+  refs.articlesContainer.innerHTML = '';
+   
+  if (textInput && textInput === e.currentTarget.elements[0].value) {
+    ifEndOfSearchAlert();
+    return;
+  } 
+
+  if (textInput === '') {
+   ifEmptySearchAlert();
+   return;
+  } 
+
+  return wellArticles()
+}
+  
+
+
     
-    if (newApiService.query.length === '') {
-      return alert('Erorr');
-      }
-    loadMoreBtn.show();
+
+function wellArticles() {
+  loadMoreBtn.show();
     newApiService.resetPage()
     newApiService.fetchArticles().then(renderGallery)
-    // new SimpleLightbox('.gallery a').refresh();
     clearRenderGallery()
     fetchArticles()
-   
 }
-
 
 function fetchArticles(){
   loadMoreBtn.disabled();
@@ -48,10 +64,11 @@ function fetchArticles(){
 }
 
  function onLoadMore () {
-    
-    newApiService.fetchArticles().then(renderGallery)
-    // new SimpleLightbox('.gallery a').refresh();
-    fetchArticles();
+  
+  newApiService.fetchArticles().then(renderGallery)
+   fetchArticles();
+   
+
    }
 
  function renderGallery(data) {
