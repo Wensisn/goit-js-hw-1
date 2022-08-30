@@ -1,10 +1,15 @@
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 import LoadMoreBtn from './js/loadMore'
 import NewApiService from './js/news-api-server'
+
 const refs = {
     searchForm: document.querySelector('.js-search-form'),
-    articlesContainer: document.querySelector('.js-articlas-container'),
+    articlesContainer: document.querySelector('.gallery'),
 }
+
+
 
 const loadMoreBtn = new LoadMoreBtn({
 selector : '[data-action="load-more"]',
@@ -27,9 +32,10 @@ loadMoreBtn.refs.button.addEventListener('click' , onLoadMore)
     if (newApiService.query.length === '') {
       return alert('Erorr');
       }
-   loadMoreBtn.show();
+    loadMoreBtn.show();
     newApiService.resetPage()
     newApiService.fetchArticles().then(renderGallery)
+    // new SimpleLightbox('.gallery a').refresh();
     clearRenderGallery()
     fetchArticles()
    
@@ -44,6 +50,7 @@ function fetchArticles(){
  function onLoadMore () {
     
     newApiService.fetchArticles().then(renderGallery)
+    // new SimpleLightbox('.gallery a').refresh();
     fetchArticles();
    }
 
@@ -65,9 +72,14 @@ function fetchArticles(){
           </div>
         </a>`  
     }).join('')
+   
 
-    refs.articlesContainer.insertAdjacentHTML('beforeend', markupGallery);
+   
+   refs.articlesContainer.insertAdjacentHTML('beforeend', markupGallery);
+   new SimpleLightbox('.gallery a').refresh();
+    
 }
+
 
 function clearRenderGallery() {
   refs.articlesContainer.innerHTML = ''

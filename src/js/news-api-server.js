@@ -6,12 +6,11 @@ export default class NewApiService {
   }
 
   fetchArticles() {
-const url = `https://pixabay.com/api/?key=29490532-fde9d4c0daff56b8071258c00&q=${this.searchQuery}&image_type=photo&per_page=8&page=${this.page}` 
+const url = `https://pixabay.com/api/?key=29490532-fde9d4c0daff56b8071258c00&q=${this.searchQuery}&image_type=photo&per_page=40&page=${this.page}` 
 
 return fetch(url)
 .then(r =>r.json())
 .then(data => {
-  console.log(data)
   this.incrementPage();
 
   return data.hits
