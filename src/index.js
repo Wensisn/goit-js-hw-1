@@ -1,110 +1,73 @@
+import { fetchImages } from './js/fetchImages';
+import { renderGallery } from './js/renderGallery';
+import { ifEmptySearchAlert, ifNoImagesFoundAlert,ifEndOfSearchAlert,ifImagesFoundAlert,ifDublicateSearch } from './js/notiflix';
+
+
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
-import LoadMoreBtn from './js/loadMore'
-import NewApiService from './js/news-api-server'
-import { ifEmptySearchAlert, ifNoImagesFoundAlert,ifEndOfSearchAlert,ifImagesFoundAlert,ifDublicateSearch } from './js/alert';
-
 const refs = {
-    searchForm: document.querySelector('.js-search-form'),
-    articlesContainer: document.querySelector('.gallery'),
+  form : document.getElementById('search-form'),
+ input : document.querySelector('input[name="searchQuery"]'),
+ gallery : document.querySelector('.gallery'),
+ loadMoreBtn : document.querySelector('.load-more'),
 }
 
+let page = 0 ; 
 let textInput = '';
+let simpleLightBox;
 
-const loadMoreBtn = new LoadMoreBtn({
-selector : '[data-action="load-more"]',
-hidden: true,
-});
+function Submit(e) {
+  e.preventDefault();
+  page = 1
+  window.scrollTo({ top: 0 });
 
-
-const newApiService = new NewApiService()
-
-refs.searchForm.addEventListener('submit' , onSearch)
-loadMoreBtn.refs.button.addEventListener('click' , onLoadMore)
-
-function onSearch(e) {
-  e.preventDefault()
-    
-  clearRenderGallery();
-
-  newApiService.query = e.currentTarget.elements.query.value
-   
-  textInput = e.currentTarget.elements[0].value.trim()
-  refs.articlesContainer.innerHTML = '';
-   
   if (textInput && textInput === e.currentTarget.elements[0].value) {
-    ifEndOfSearchAlert();
+    ifDublicateSearch()
     return;
-  } 
+  }
+  textInput = e.currentTarget.elements[0].value.trim()
+  refs.gallery.innerHTML = '';
+  refs.loadMoreBtn.classList.add("is-hidden");
 
-  if (textInput === '') {
-   ifEmptySearchAlert();
-   return;
-  } 
-
-  return wellArticles()
-}
+    if (textInput === '') {
+        ifEmptySearchAlert();
+        return;
+    }
   
+  fetchImages(textInput, page).then(({ data }) => {
 
+    if (!data.totalHits) {
+      ifNoImagesFoundAlert()
+    } else {
+      refs.gallery.insertAdjacentHTML('beforeend', renderGallery(data.hits))
+      simpleLightBox = new SimpleLightbox('.gallery a').refresh();
+      ifImagesFoundAlert(data);
+    }
+    if (data.totalHits > 40) {
+        refs.loadMoreBtn.classList.remove('is-hidden');
+    }
+  })
+    form.reset();
+}
 
+function LoadMoreClick() {
+  simpleLightBox.destroy()
+  page += 1;
+
+    fetchImages(textInput, page).then(({ data }) => {
     
+    refs.gallery.insertAdjacentHTML('beforeend',renderGallery(data.hits))
+    simpleLightBox = new SimpleLightbox('.gallery a').refresh();
+        
+    const totalPages = Math.ceil(data.totalHits / 40);
 
-function wellArticles() {
-  loadMoreBtn.show();
-    newApiService.resetPage()
-    newApiService.fetchArticles().then(renderGallery)
-    clearRenderGallery()
-    fetchArticles()
+      if (page > totalPages) {
+        refs.loadMoreBtn.classList.add('is-hidden');
+        ifEndOfSearchAlert();
+      }
+    })
 }
 
-function fetchArticles(){
-  loadMoreBtn.disabled();
-  loadMoreBtn.enable();
-}
-
- function onLoadMore () {
-  
-  newApiService.fetchArticles().then(renderGallery)
-   fetchArticles();
-   
-
-   }
-
- function renderGallery(data) {
-    const markupGallery = data.map(({
-        webformatURL, largeImageURL,
-        tags, likes, views, comments, downloads
-    }) => {
-        return `
-    <a class="gallery-link" href="${largeImageURL}">
-          <div class="photo-card">
-            <img class="photo-card-image" src="${webformatURL}" alt="${tags}" loading="lazy" />
-            <div class="info">
-              <p class="info-item"><b>Likes:</b>${likes}</p>
-              <p class="info-item"><b>Views</b>${views}</p>
-              <p class="info-item"><b>Comments</b>${comments}</p>
-              <p class="info-item"><b>Downloads</b>${downloads}</p>
-            </div>
-          </div>
-        </a>`  
-    }).join('')
-   
-
-   
-   refs.articlesContainer.insertAdjacentHTML('beforeend', markupGallery);
-   new SimpleLightbox('.gallery a').refresh();
-    
-}
-
-
-function clearRenderGallery() {
-  refs.articlesContainer.innerHTML = ''
-}
-
-
-
-
-
-
-
+refs.loadMoreBtn.addEventListener('click', LoadMoreClick)
+refs.form.addEventListener('submit', Submit)
