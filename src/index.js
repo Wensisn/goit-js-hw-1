@@ -17,23 +17,25 @@ let page = 0 ;
 let textInput = '';
 let simpleLightBox;
 
-function Submit(e) {
+function submit(e) {
   e.preventDefault();
-  page = 1
-  window.scrollTo({ top: 0 });
+ 
 
   if (textInput && textInput === e.currentTarget.elements[0].value) {
     ifDublicateSearch()
     return;
   }
   textInput = e.currentTarget.elements[0].value.trim()
-  refs.gallery.innerHTML = '';
   refs.loadMoreBtn.classList.add("is-hidden");
 
-    if (textInput === '') {
+  if (textInput === '') {
         ifEmptySearchAlert();
         return;
-    }
+  }
+
+  page = 1
+  window.scrollTo({ top: 0 });
+  refs.gallery.innerHTML = '';
   
   fetchImages(textInput, page).then(({ data }) => {
 
@@ -48,10 +50,9 @@ function Submit(e) {
         refs.loadMoreBtn.classList.remove('is-hidden');
     }
   })
-    form.reset();
 }
 
-function LoadMoreClick() {
+function onLoadMoreClick() {
   simpleLightBox.destroy()
   page += 1;
 
@@ -69,5 +70,5 @@ function LoadMoreClick() {
     })
 }
 
-refs.loadMoreBtn.addEventListener('click', LoadMoreClick)
-refs.form.addEventListener('submit', Submit)
+refs.loadMoreBtn.addEventListener('click', onLoadMoreClick)
+refs.form.addEventListener('submit', submit)
